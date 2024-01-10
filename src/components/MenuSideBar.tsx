@@ -9,7 +9,7 @@ import { FiMessageSquare, FiFolder, FiShoppingCart } from 'react-icons/fi'
 
 export function MenuSideBar() {
   const menus = [
-    { name: 'dashboard', link: '/', icon: MdOutlineDashboard },
+    { name: 'Painel de Controle', link: '/', icon: MdOutlineDashboard },
     { name: 'user', link: '/', icon: AiOutlineUser },
     { name: 'messages', link: '/', icon: FiMessageSquare },
     { name: 'analytics', link: '/', icon: TbReportAnalytics, margin: true },
@@ -18,12 +18,12 @@ export function MenuSideBar() {
     { name: 'Saved', link: '/', icon: AiOutlineHeart, margin: true },
     { name: 'Setting', link: '/', icon: RiSettings4Line },
   ]
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
   return (
     <div
       className={`bg-[#A1D7E2] min-h-screen ${
         open ? 'w-60' : 'w-16'
-      } duration-500 text-gray-100 px-4`}
+      } duration-500 text-gray-100 px-4 absolute`}
     >
       <div className="py-3 flex justify-end">
         <HiMenuAlt3
