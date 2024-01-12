@@ -22,7 +22,7 @@ export function MenuSideBar() {
   return (
     <div
       className={`bg-[#A1D7E2] min-h-screen ${
-        open ? 'w-60' : 'w-16'
+        open ? 'sm:w-30 md:w-60' : 'w-16'
       } duration-500 text-gray-100 px-4 absolute`}
     >
       <div className="py-3 flex justify-end">

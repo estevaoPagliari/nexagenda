@@ -6,8 +6,10 @@ export function Welcome() {
         <Image src={require('../assets/logo.png')} alt="logo" width={100} />
       </div>
       <div className="text-center justify-stretch ">
-        <h1 className="text-2xl font-bold m-4">Bem Vindo</h1>
-        <h1 className="text-2xl font-bold m-4">Salão Dev Nex !</h1>
+        <h1 className="sm:text-x1 md:text-2xl font-bold m-4">Bem Vindo</h1>
+        <h1 className="sm:text-xl md:text-2xl font-bold m-4">
+          Salão Dev Nex !
+        </h1>
       </div>
     </div>
   )

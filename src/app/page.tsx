@@ -1,5 +1,8 @@
+import { AgendamentoDia } from '@/components/AgendamentoDia'
+import { AgendamentoMes } from '@/components/AgendamentoMes'
 import { MenuSideBar } from '@/components/MenuSideBar'
 import { Welcome } from '@/components/Welcome'
+import { FaCalendarAlt } from 'react-icons/fa'
 
 export default function Home() {
   return (
@@ -7,10 +10,17 @@ export default function Home() {
       <MenuSideBar />
       <div className="flex-1 flex-col ml-16 sm:flex-row md:flex-row">
         <Welcome />
-        <div className="grid h-auto grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-2 ">
-          <div className="border ">Agendamento do Dia</div>
-          <div className="border">Agendamento da Semana</div>
-          <div className="border">Agendamento do Mês</div>
+        <div className="grid  md:grid-cols-1 lg:grid-cols-3 gap-4 p-4">
+          {/* Conteúdo da coluna 1 */}
+          <AgendamentoDia />
+
+          {/* Conteúdo da coluna 2 */}
+          <AgendamentoMes />
+
+          {/* Conteúdo da coluna 3 */}
+          <div className="bg-slate-200/40 rounded-xl p-4 flex flex-col justify-center items-center overflow-y-auto">
+            Coluna 3
+          </div>
         </div>
       </div>
     </main>
