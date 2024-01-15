@@ -13,10 +13,12 @@ export function AgendamentoMes() {
   ]
 
   return (
-    <div className="bg-slate-200/40 rounded-xl p-2 flex h-[500px] flex-col  items-center overflow-y-auto">
-      <h1 className="text-center font-semibold sm:text-lg md:text-xl border-b border-black/5 shadow-sm ">
-        Agendamento do Mês
-      </h1>
+    <div className="bg-slate-200/40 rounded-xl p-2 flex h-[600px] flex-col  items-center overflow-auto">
+      <div className="flex md:w-[430px] gap-4">
+        <h1 className="text-start font-semibold sm:text-lg md:text-xl border-b border-black/5 shadow-sm ml-2">
+          Agendamento do Semana
+        </h1>
+      </div>
       {semana?.map((horarios, i) => (
         <a
           href=""
@@ -27,9 +29,12 @@ export function AgendamentoMes() {
             <FaCalendarAlt size={30} />
           </div>
           <div className="flex-1 flex-col text-center p-1 font-bold text-xs border-x border-slate-500/40">
-            <p className="">{horarios?.semana}</p>
-            {if(horarios?.vago ===false)}
-            <p>Disponivel</p>
+            <p className="font-bold text-base">{horarios?.semana}</p>
+            {horarios?.vago === false ? (
+              <p className="text-red-600 text-xl">Indisponivel</p>
+            ) : (
+              <p className="text-green-600 text-xl">Disponivel</p>
+            )}
           </div>
         </a>
       ))}

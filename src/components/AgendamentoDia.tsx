@@ -1,8 +1,11 @@
 import React from 'react'
 import { FaCalendarAlt } from 'react-icons/fa'
+import { FaCalendarDay } from 'react-icons/fa6'
 
 export function AgendamentoDia() {
   const horario = [
+    { horario: '20/03 - 13:00', servico: 'Vago', cliente: 'Vago' },
+    { horario: '20/03 - 14:00', servico: 'Vago', cliente: 'Vago' },
     { horario: '20/03 - 15:00', servico: 'Corte', cliente: 'Estevão' },
     { horario: '20/03 - 16:00', servico: 'Corte e Barba', cliente: 'Dudu' },
     { horario: '20/03 - 17:00', servico: 'Corte', cliente: 'Yuri' },
@@ -13,10 +16,19 @@ export function AgendamentoDia() {
   ]
 
   return (
-    <div className="bg-slate-200/40 rounded-xl p-2 flex h-[500px] flex-col  items-center overflow-y-auto">
-      <h1 className="text-center font-semibold sm:text-lg md:text-xl border-b border-black/5 shadow-sm ">
-        Agendamento do Dia
-      </h1>
+    <div className="bg-slate-200/40 rounded-xl p-2 flex h-[600px] flex-col  items-center overflow-y-auto">
+      <div className="flex md:w-[430px] gap-4">
+        <h1 className="text-start font-semibold sm:text-lg md:text-xl border-b border-black/5 shadow-sm ml-2">
+          Agendamento do Dia
+        </h1>
+        <div className="flex flex-1 justify-end items-center ">
+          <FaCalendarDay size="25" />
+          <h1 className="font-semibold sm:text-lg md:text-xl border-b border-black/5 shadow-sm ml-2">
+            20/03/2023
+          </h1>
+        </div>
+      </div>
+
       {horario?.map((horarios, i) => (
         <a
           href=""
