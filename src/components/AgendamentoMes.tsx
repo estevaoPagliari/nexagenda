@@ -14,17 +14,18 @@ export function AgendamentoMes() {
   ]
 
   return (
-    <div className="bg-slate-200/40 rounded-xl p-2 flex h-[600px] flex-col  items-center overflow-auto">
-      <div className="flex md:w-[430px] gap-4">
+    <div className="bg-slate-200/40 rounded-xl flex h-96 flex-col  items-center ">
+      <div className="flex w-96 gap-4">
         <h1 className="text-start font-semibold sm:text-lg md:text-xl border-b border-black/5 shadow-sm ml-2">
           Agendamento do Semana
         </h1>
       </div>
+      <div className='overflow-auto w-80'>
       {semana?.map((horarios, i) => (
         <a
           href=""
           key={i}
-          className="   md:w-[430px] h-auto  flex flex-row p-1 items-center rounded-lg gap-4 mt-2 bg-slate-200/50 hover:bg-slate-200"
+          className="  flex flex-row p-1 items-center rounded-lg gap-2 mt-2 bg-slate-200/50 hover:bg-[#A1D7E2] transition duration-300"
         >
           <div className="ml-1">
             <FaCalendarAlt size={30} />
@@ -39,6 +40,7 @@ export function AgendamentoMes() {
           </div>
         </a>
       ))}
+      </div>
     </div>
   )
 }
