@@ -16,7 +16,7 @@ export default function Home() {
       <div className="flex-1 flex-col ml-16 sm:flex-row md:flex-row">
         <div className='flex flex-row p-2'>
         <Welcome />
-        <Relogio/>
+       
         </div>
         
         <div className="grid  md:grid-cols-1 lg:grid-cols-3 gap-4 p-1">
