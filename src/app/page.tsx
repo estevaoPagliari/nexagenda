@@ -14,7 +14,7 @@ export default function Home() {
       <MenuSideBar />
 
       <div className="flex-1 flex-col ml-16 sm:flex-row md:flex-row">
-        <div className='flex-row p-2'>
+        <div className=''>
         <Welcome />
        
         </div>
