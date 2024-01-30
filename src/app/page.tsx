@@ -14,10 +14,10 @@ export default function Home() {
       <MenuSideBar />
 
       <div className="flex-1 flex-col ml-16 sm:flex-row md:flex-row">
-        <div className=''>
+        
         <Welcome />
        
-        </div>
+       
         
         <div className="grid  md:grid-cols-1 lg:grid-cols-3 gap-4 p-1">
           {/* Conteúdo da coluna 1 */}
