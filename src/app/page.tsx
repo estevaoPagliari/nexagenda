@@ -2,11 +2,8 @@ import { AgendamentoDia } from '@/components/AgendamentoDia'
 import { AgendamentoMes } from '@/components/AgendamentoMes'
 import { MenuSideBar } from '@/components/MenuSideBar'
 import { Welcome } from '@/components/Welcome'
-import { FaCalendarAlt } from 'react-icons/fa'
-import Link from 'next/link'
 import { Calendario } from '@/components/Calendario'
-import { Relogio } from '@/components/Relogio'
-import { CalendarioMenu } from '@/components/CalendarioMenu'
+import { ModalCliente } from '@/components/ModalCliente'
 
 export default function Home() {
   return (

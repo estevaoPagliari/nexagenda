@@ -2,8 +2,11 @@
 import React, { useState } from 'react'
 import { FaCalendarAlt } from 'react-icons/fa'
 import { FaCalendarDay } from 'react-icons/fa6'
+import { ModalCliente } from './ModalCliente'
 
 export function AgendamentoDia() {
+  const [showModal, setShowModal] = useState<boolean>(false)
+  const handleOnClose = () => setShowModal(false)
   const [selectedDay, setSelectedDay] = useState<string>('20')
   const [selectedMonth, setSelectedMonth] = useState<string>('03')
 
@@ -64,9 +67,10 @@ export function AgendamentoDia() {
       </div>
       <div className="overflow-y-auto">
         {horario?.map((horarios, i) => (
-          <div
+          <button
             key={i}
-            className="w-80 flex flex-row p-1 items-center rounded-lg gap-2 mt-2 bg-slate-200/50 hover:bg-[#A1D7E2] transition duration-300"
+            className="w-96 flex flex-row p-1 items-center rounded-lg gap-2 mt-2 bg-slate-200/50 hover:bg-[#A1D7E2] transition duration-300"
+            onClick={() => setShowModal(true)}
           >
             <div className="ml-1">
               <FaCalendarAlt size={30} />
@@ -79,7 +83,7 @@ export function AgendamentoDia() {
               <p className="">Cliente :</p>
               <p>{horarios?.cliente}</p>
             </div>
-          </div>
+          </button>
         ))}
       </div>
     </div>
