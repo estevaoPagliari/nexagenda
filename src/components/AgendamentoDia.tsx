@@ -1,11 +1,11 @@
 'use client'
-import React, { useState } from 'react';
-import { FaCalendarAlt } from 'react-icons/fa';
-import { FaCalendarDay } from 'react-icons/fa6';
+import React, { useState } from 'react'
+import { FaCalendarAlt } from 'react-icons/fa'
+import { FaCalendarDay } from 'react-icons/fa6'
 
 export function AgendamentoDia() {
-  const [selectedDay, setSelectedDay] = useState<string>('20');
-  const [selectedMonth, setSelectedMonth] = useState<string>('03');
+  const [selectedDay, setSelectedDay] = useState<string>('20')
+  const [selectedMonth, setSelectedMonth] = useState<string>('03')
 
   const horario = [
     { horario: '20/03 - 13:00', servico: 'Vago', cliente: 'Vago' },
@@ -17,10 +17,12 @@ export function AgendamentoDia() {
     { horario: '20/03 - 19:00', servico: 'Barba', cliente: 'Flavio' },
     { horario: '20/03 - 20:00', servico: 'Barba', cliente: 'Erick' },
     { horario: '20/03 - 21:00', servico: 'Vago', cliente: 'Vago' },
-  ];
+  ]
 
-  const dias = Array.from({ length: 31 }, (_, i) => (i + 1).toString());
-  const meses = Array.from({ length: 12 }, (_, i) => (new Date(2000, i, 1).toLocaleString('pt-BR', { month: 'long' })));
+  const dias = Array.from({ length: 31 }, (_, i) => (i + 1).toString())
+  const meses = Array.from({ length: 12 }, (_, i) =>
+    new Date(2000, i, 1).toLocaleString('pt-BR', { month: 'long' }),
+  )
 
   return (
     <div className="bg-slate-200/40 rounded-xl h-96  flex flex-col  items-center ">
@@ -49,7 +51,10 @@ export function AgendamentoDia() {
               onChange={(e) => setSelectedMonth(e.target.value)}
             >
               {meses.map((mes, index) => (
-                <option key={index} value={(index + 1).toString().padStart(2, '0')}>
+                <option
+                  key={index}
+                  value={(index + 1).toString().padStart(2, '0')}
+                >
                   {mes}
                 </option>
               ))}
@@ -57,7 +62,7 @@ export function AgendamentoDia() {
           </div>
         </div>
       </div>
-      <div className='overflow-y-auto'>
+      <div className="overflow-y-auto">
         {horario?.map((horarios, i) => (
           <div
             key={i}
@@ -78,5 +83,5 @@ export function AgendamentoDia() {
         ))}
       </div>
     </div>
-  );
+  )
 }

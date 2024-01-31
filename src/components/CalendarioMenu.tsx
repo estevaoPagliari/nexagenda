@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   startOfMonth,
   endOfMonth,
@@ -8,33 +8,37 @@ import {
   addMonths,
   subMonths,
   getDay,
-} from 'date-fns';
-import { FaRegArrowAltCircleLeft, FaRegArrowAltCircleRight } from 'react-icons/fa';
+} from 'date-fns'
+import {
+  FaRegArrowAltCircleLeft,
+  FaRegArrowAltCircleRight,
+} from 'react-icons/fa'
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface CalendarioProps {}
 
 export const CalendarioMenu: React.FC<CalendarioProps> = () => {
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  const [selectedDay, setSelectedDay] = useState<string>('');
+  const [currentDate, setCurrentDate] = useState<Date>(new Date())
+  const [selectedDay, setSelectedDay] = useState<string>('')
 
   const diasDoMes: Date[] = eachDayOfInterval({
     start: startOfMonth(currentDate),
     end: endOfMonth(currentDate),
-  });
+  })
 
-  const diasVazios: null[] = new Array(getDay(diasDoMes[0])).fill(null);
+  const diasVazios: null[] = new Array(getDay(diasDoMes[0])).fill(null)
 
   const avancarMes = () => {
-    setCurrentDate(addMonths(currentDate, 1));
-  };
+    setCurrentDate(addMonths(currentDate, 1))
+  }
 
   const retrocederMes = () => {
-    setCurrentDate(subMonths(currentDate, 1));
-  };
+    setCurrentDate(subMonths(currentDate, 1))
+  }
 
   const handleDaySelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedDay(event.target.value);
-  };
+    setSelectedDay(event.target.value)
+  }
 
   return (
     <div className="container mx-auto">
@@ -81,5 +85,5 @@ export const CalendarioMenu: React.FC<CalendarioProps> = () => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}

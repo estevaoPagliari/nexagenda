@@ -14,11 +14,8 @@ export default function Home() {
       <MenuSideBar />
 
       <div className="flex-1 flex-col ml-16 sm:flex-row md:flex-row">
-        
         <Welcome />
-       
-       
-        
+
         <div className="grid  md:grid-cols-1 lg:grid-cols-3 gap-4 p-1">
           {/* Conteúdo da coluna 1 */}
           <AgendamentoDia />
@@ -29,7 +26,6 @@ export default function Home() {
           {/* Conteúdo da coluna 3 */}
           <Calendario />
         </div>
-        
       </div>
     </main>
   )
