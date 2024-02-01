@@ -1,11 +1,22 @@
+'use client'
 import { AgendamentoDia } from '@/components/AgendamentoDia'
 import { AgendamentoMes } from '@/components/AgendamentoMes'
 import { MenuSideBar } from '@/components/MenuSideBar'
 import { Welcome } from '@/components/Welcome'
 import { Calendario } from '@/components/Calendario'
 import { ModalCliente } from '@/components/ModalCliente'
+import { useState } from 'react'
 
 export default function Home() {
+  const [isModalVisible, setModalVisible] = useState(false)
+
+  const handleOpenModal = () => {
+    setModalVisible(true)
+  }
+
+  const handleCloseModal = () => {
+    setModalVisible(false)
+  }
   return (
     <main className="h-screen flex ">
       <MenuSideBar />

@@ -5,22 +5,47 @@ import { FaCalendarDay } from 'react-icons/fa6'
 import { ModalCliente } from './ModalCliente'
 
 export function AgendamentoDia() {
-  const [showModal, setShowModal] = useState<boolean>(false)
-  const handleOnClose = () => setShowModal(false)
+  const horario = [
+    { horario: '13:00', servico: 'Vago', nome: 'Vago' },
+    { horario: ' 14:00', servico: 'Vago', nome: 'Vago' },
+    {
+      horario: '15:00',
+      servico: 'Corte',
+      nome: 'Estevão Pagliari',
+      telefone: '(19)-992756035',
+      rua: 'Joaquim Marques Castelhano',
+      numero: '460',
+      cidade: 'Porto Ferreira',
+      estado: 'São Paulo',
+    },
+    { horario: '16:00', servico: 'Corte e Barba', nome: 'Dudu' },
+    { horario: '17:00', servico: 'Corte', nome: 'Yuri' },
+    { horario: '18:00', servico: 'Vago', nome: 'Vago' },
+    { horario: '19:00', servico: 'Barba', nome: 'Flavio' },
+    { horario: '20:00', servico: 'Barba', nome: 'Erick' },
+    { horario: '21:00', servico: 'Vago', nome: 'Vago' },
+  ]
+  const [isModalVisible, setModalVisible] = useState<Array<boolean>>(
+    horario.map(() => false),
+  )
+
+  const handleOpenModal = (index: number) => {
+    setModalVisible((prev) => {
+      const newState = [...prev]
+      newState[index] = true
+      return newState
+    })
+  }
+
+  const handleCloseModal = (index: number) => {
+    setModalVisible((prev) => {
+      const newState = [...prev]
+      newState[index] = false
+      return newState
+    })
+  }
   const [selectedDay, setSelectedDay] = useState<string>('20')
   const [selectedMonth, setSelectedMonth] = useState<string>('03')
-
-  const horario = [
-    { horario: '20/03 - 13:00', servico: 'Vago', cliente: 'Vago' },
-    { horario: '20/03 - 14:00', servico: 'Vago', cliente: 'Vago' },
-    { horario: '20/03 - 15:00', servico: 'Corte', cliente: 'Estevão' },
-    { horario: '20/03 - 16:00', servico: 'Corte e Barba', cliente: 'Dudu' },
-    { horario: '20/03 - 17:00', servico: 'Corte', cliente: 'Yuri' },
-    { horario: '20/03 - 18:00', servico: 'Vago', cliente: 'Vago' },
-    { horario: '20/03 - 19:00', servico: 'Barba', cliente: 'Flavio' },
-    { horario: '20/03 - 20:00', servico: 'Barba', cliente: 'Erick' },
-    { horario: '20/03 - 21:00', servico: 'Vago', cliente: 'Vago' },
-  ]
 
   const dias = Array.from({ length: 31 }, (_, i) => (i + 1).toString())
   const meses = Array.from({ length: 12 }, (_, i) =>
@@ -37,7 +62,7 @@ export function AgendamentoDia() {
           <FaCalendarDay size="25" />
           <div className="flex gap-2 ml-2">
             <select
-              className="border-b border-black/5 shadow-sm"
+              className="border-b border-black/5 shadow-sm rounded-md"
               value={selectedDay}
               onChange={(e) => setSelectedDay(e.target.value)}
             >
@@ -49,7 +74,7 @@ export function AgendamentoDia() {
             </select>
             <span>/</span>
             <select
-              className="border-b border-black/5 shadow-sm"
+              className="border-b border-black/5 shadow-sm rounded-md"
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(e.target.value)}
             >
@@ -67,23 +92,29 @@ export function AgendamentoDia() {
       </div>
       <div className="overflow-y-auto">
         {horario?.map((horarios, i) => (
-          <button
-            key={i}
-            className="w-96 flex flex-row p-1 items-center rounded-lg gap-2 mt-2 bg-slate-200/50 hover:bg-[#A1D7E2] transition duration-300"
-            onClick={() => setShowModal(true)}
-          >
-            <div className="ml-1">
-              <FaCalendarAlt size={30} />
-            </div>
-            <div className="flex-1 flex-col text-center p-1 font-bold text-xs border-x border-slate-500/40">
-              <p className="">{`${selectedDay}/${selectedMonth} - ${horarios?.horario}`}</p>
-              <p>Serviço - {horarios?.servico}</p>
-            </div>
-            <div className="flex-1 flex-col text-center p-1 font-bold ">
-              <p className="">Cliente :</p>
-              <p>{horarios?.cliente}</p>
-            </div>
-          </button>
+          <div key={i}>
+            <button
+              className="w-96 flex flex-row p-1 items-center rounded-lg gap-2 mt-2 bg-slate-200/50 hover:bg-[#A1D7E2] transition duration-300"
+              onClick={() => handleOpenModal(i)}
+            >
+              <div className="ml-1">
+                <FaCalendarAlt size={30} />
+              </div>
+              <div className="flex-1 flex-col text-center p-1 font-bold text-xs border-x border-slate-500/40">
+                <p className="">{`${selectedDay}/${selectedMonth} - ${horarios?.horario}`}</p>
+                <p>Serviço - {horarios?.servico}</p>
+              </div>
+              <div className="flex-1 flex-col text-center p-1 font-bold ">
+                <p className="">Cliente :</p>
+                <p>{horarios?.nome}</p>
+              </div>
+              <ModalCliente
+                visible={isModalVisible[i]}
+                onClose={() => handleCloseModal(i)}
+                nome={horarios.nome}
+              />
+            </button>
+          </div>
         ))}
       </div>
     </div>
