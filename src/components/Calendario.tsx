@@ -1,5 +1,6 @@
 'use client'
-import React, { useState } from 'react'
+// Calendario.js
+import React, { useEffect, useState } from 'react'
 import {
   startOfMonth,
   endOfMonth,
@@ -13,16 +14,28 @@ import {
   FaRegArrowAltCircleLeft,
   FaRegArrowAltCircleRight,
 } from 'react-icons/fa'
+interface CalendarioProps {
+  onDataSelecionada: (data: { dia: number; mes: number }) => void
+}
 
-export function Calendario() {
+export function Calendario({ onDataSelecionada }: CalendarioProps) {
   const [currentDate, setCurrentDate] = useState(new Date())
+  const [dataSelecionada, setDataSelecionada] = useState<{
+    dia: number | null
+    mes: number | null
+  }>({ dia: null, mes: null })
+
+  useEffect(() => {
+    const diaAtual = new Date().getDate()
+    const mesAtual = new Date().getMonth() + 1
+    setDataSelecionada({ dia: diaAtual, mes: mesAtual })
+  }, [])
 
   const diasDoMes = eachDayOfInterval({
     start: startOfMonth(currentDate),
     end: endOfMonth(currentDate),
   })
 
-  // Adiciona espaços em branco no início para alinhar com o dia da semana correto
   const diasVazios = new Array(getDay(diasDoMes[0])).fill(null)
 
   const avancarMes = () => {
@@ -33,8 +46,14 @@ export function Calendario() {
     setCurrentDate(subMonths(currentDate, 1))
   }
 
+  const handleNumeroClick = (dia: number) => {
+    const mes = currentDate.getMonth() + 1 // Mês é baseado em zero, então adicionamos 1
+    setDataSelecionada({ dia, mes })
+    onDataSelecionada({ dia, mes })
+  }
+
   return (
-    <div className="bg-slate-200/40 rounded-xl p-1 justify-center items-center h-96 overflow-y-auto">
+    <div className="bg-slate-200/40 rounded-xl p-1 justify-center items-center h-96">
       <div className="flex justify-between items-center mb-4">
         <FaRegArrowAltCircleLeft size={30} onClick={retrocederMes} />
         <h2 className="text-2xl font-bold">
@@ -54,7 +73,12 @@ export function Calendario() {
         {diasDoMes.map((dia, index) => (
           <div
             key={index}
-            className="text-center p-2 border rounded-md hover:bg-[#A1D7E2] transition duration-300"
+            className={`text-center p-2 border rounded-md hover:bg-[#A1D7E2] transition duration-300 cursor-pointer font-semibold ${
+              dataSelecionada && dataSelecionada.dia === index + 1
+                ? 'bg-[#001F3F] text-slate-100 font-bold scale-105'
+                : ''
+            }`}
+            onClick={() => handleNumeroClick(index + 1)}
           >
             {format(dia, 'd')}
           </div>

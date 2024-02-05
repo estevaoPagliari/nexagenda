@@ -3,13 +3,14 @@ import { CgClose } from 'react-icons/cg'
 
 interface ModalClienteProps {
   visible: boolean
-  onClose: MouseEventHandler<HTMLButtonElement>
+  onClose: () => void
   nome?: string
   telefone?: string
-  endereco?: string
+  rua?: string
   numero?: string
   cidade?: string
   estado?: string
+  servico?: string
 }
 
 export function ModalCliente({
@@ -17,10 +18,11 @@ export function ModalCliente({
   onClose,
   nome,
   telefone,
-  endereco,
+  rua,
   numero,
   cidade,
   estado,
+  servico,
 }: ModalClienteProps) {
   if (!visible) return null
   return (
@@ -51,34 +53,34 @@ export function ModalCliente({
           </div>
           <div className="flex bg-slate-100/60 p-2 rounded-sm gap-1">
             <p>Telefone: </p>
-            <p>(19)-99999999 </p>
+            <p>{telefone !== null && telefone !== '' ? telefone : 'Vago'} </p>
           </div>
         </div>
         <div className="flex flex-row gap-2 mt-2">
           <div className="flex bg-slate-100/60 p-2 rounded-sm gap-1">
             <p>Endereço: </p>
-            <p>Rua Joaquim Marques Castelhano</p>
+            <p>{rua}</p>
           </div>
           <div className="flex bg-slate-100/60 p-2 rounded-sm gap-1">
             <p>N: </p>
-            <p>460</p>
+            <p>{numero}</p>
           </div>
         </div>
         <div className="flex flex-row gap-2 mt-2">
           <div className="flex bg-slate-100/60 p-2 rounded-sm gap-1">
             <p>Cidade: </p>
-            <p>Porto Ferreira</p>
+            <p>{cidade}</p>
           </div>
           <div className="flex bg-slate-100/60 p-2 rounded-sm gap-1">
             <p>Estado: </p>
-            <p>São Paulo</p>
+            <p>{estado}</p>
           </div>
         </div>
 
         <div className="flex flex-row gap-1 p-1 mt-2 justify-center mb-2">
           <div className="flex bg-green-400  p-2 rounded-xl gap-1 font-semibold text-2xl w-96 justify-center">
             <p>Serviço:</p>
-            <p>Corte Barba</p>
+            <p>{servico}</p>
           </div>
         </div>
         <div className="flex items-center justify-center mb-2 border-b-2 bg-red-500 rounded-xl ">
