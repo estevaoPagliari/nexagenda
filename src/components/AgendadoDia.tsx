@@ -1,47 +1,94 @@
-import React, { useState, ChangeEvent } from 'react'
+import React, { useState, useEffect } from 'react'
+import { format, isToday } from 'date-fns'
 
-export function AgendadoDia() {
-  // Estado para armazenar as atividades do dia
-  const [activities, setActivities] = useState<string[]>(
-    Array.from({ length: 24 }, () => ''),
-  )
+interface Appointment {
+  time: string
+  clientName: string
+  service: string
+}
 
-  // Função para atualizar a atividade em uma determinada hora
-  const updateActivity = (hour: number, activity: string) => {
-    setActivities((prevActivities) => {
-      const newActivities = [...prevActivities]
-      newActivities[hour] = activity
-      return newActivities
-    })
+const generateAppointments = (
+  openingTime: string,
+  closingTime: string,
+  lunchStart: string,
+  lunchEnd: string,
+): Appointment[] => {
+  const appointments: Appointment[] = []
+  const currentTime = new Date()
+  const openingHour = parseInt(openingTime.split(':')[0])
+  const closingHour = parseInt(closingTime.split(':')[0])
+  const lunchStartHour = parseInt(lunchStart.split(':')[0])
+  const lunchEndHour = parseInt(lunchEnd.split(':')[0])
+
+  // Gerar horários de trabalho
+  for (let i = openingHour; i < closingHour; i++) {
+    const hour = i < 10 ? `0${i}` : `${i}`
+    if (i < lunchStartHour || i >= lunchEndHour) {
+      appointments.push({ time: `${hour}:00`, clientName: '', service: '' })
+      appointments.push({ time: `${hour}:30`, clientName: '', service: '' })
+    }
   }
 
+  return appointments
+}
+
+export function AgendadoDia() {
+  const openingTime = '09:00'
+  const closingTime = '21:00'
+  const lunchStart = '12:00'
+  const lunchEnd = '13:30'
+
+  const [appointments, setAppointments] = useState<Appointment[]>(
+    generateAppointments(openingTime, closingTime, lunchStart, lunchEnd),
+  )
+
+  const handleAppointmentChange = (
+    index: number,
+    clientName: string,
+    service: string,
+  ) => {
+    const updatedAppointments = [...appointments]
+    updatedAppointments[index].clientName = clientName
+    updatedAppointments[index].service = service
+    setAppointments(updatedAppointments)
+  }
   return (
-    <div className="bg-gray-200 p-4 rounded-md">
-      <h2 className="text-2xl font-bold mb-4">Calendário Diário</h2>
-      <div className="grid grid-cols-2 gap-4">
-        {/* Coluna de Horas */}
-        <div className="col-span-1">
-          {Array.from({ length: 24 }).map((_, hour) => (
-            <div key={hour} className="text-right">
-              {hour < 10 ? `0${hour}:00` : `${hour}:00`}
-            </div>
-          ))}
-        </div>
-        {/* Coluna de Atividades */}
-        <div className="col-span-1">
-          {activities.map((activity, hour) => (
-            <div key={hour} className="border p-2 mb-2">
-              <p className="mb-1">{hour < 10 ? `0${hour}:00` : `${hour}:00`}</p>
-              <textarea
-                className="w-full h-16 resize-none"
-                value={activity}
-                onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-                  updateActivity(hour, e.target.value)
+    <div className="bg-slate-200/40 rounded-xl py-8 px-4 sm:px-6 lg:px-8 overflow-y-auto h-96">
+      <h1 className="text-3xl font-bold mb-8">Agenda do Estabelecimento</h1>
+      <div className="grid grid-cols-1 gap-4 ">
+        {appointments.map((appointment, index) => (
+          <div key={index} className="flex items-center">
+            <div className="mr-4">{appointment.time}</div>
+            <div className="flex-1">
+              <input
+                type="text"
+                value={appointment.clientName}
+                onChange={(e) =>
+                  handleAppointmentChange(
+                    index,
+                    e.target.value,
+                    appointment.service,
+                  )
                 }
+                className="border rounded-md px-2 py-1 w-full mb-2"
+                placeholder="Nome do cliente"
+              />
+              <input
+                type="text"
+                value={appointment.service}
+                onChange={(e) =>
+                  handleAppointmentChange(
+                    index,
+                    appointment.clientName,
+                    e.target.value,
+                  )
+                }
+                className="border rounded-md px-2 py-1 w-full"
+                placeholder="Serviço"
               />
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   )

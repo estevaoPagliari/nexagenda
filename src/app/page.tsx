@@ -33,11 +33,11 @@ export default function Home() {
           {/* Conteúdo da coluna 1 */}
           <Calendario onDataSelecionada={handleDataSelecionada} />
           {/* Conteúdo da coluna 2 */}
-          <AgendamentoDia dataSelecionada={dataSelecionada} />
 
           {/* Conteúdo da coluna 3 */}
+          <AgendadoDia />
         </div>
-        <AgendadoDia />
+        <AgendamentoDia dataSelecionada={dataSelecionada} />
       </div>
     </div>
   )
