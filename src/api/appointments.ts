@@ -1,6 +1,7 @@
 import { api } from './api'
 
 interface Appointments {
+  data: string
   time: string
   clientName: string
   service: string

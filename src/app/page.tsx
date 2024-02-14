@@ -35,9 +35,8 @@ export default function Home() {
           {/* Conteúdo da coluna 2 */}
 
           {/* Conteúdo da coluna 3 */}
-          <AgendadoDia />
+          <AgendadoDia dataSelecionada={dataSelecionada} />
         </div>
-        <AgendamentoDia dataSelecionada={dataSelecionada} />
       </div>
     </div>
   )
