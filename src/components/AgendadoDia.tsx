@@ -1,13 +1,16 @@
 import axios from 'axios'
 import React, { useState, useEffect } from 'react'
 import { api } from '../api/api'
+import { FaRegCalendarCheck, FaRegCalendarXmark } from 'react-icons/fa6'
 
 interface AppointmentData {
   dia: string
   time: string
   clientName: string
   service: string
+  timeservice?: string
 }
+
 interface DiaSelecionado {
   dataSelecionada: { dia: number; mes: number } | null
 }
@@ -23,22 +26,22 @@ export function AgendadoDia({ dataSelecionada }: DiaSelecionado) {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const dia = dataSelecionada?.dia
-        const mes = dataSelecionada?.mes
-        const response = await api.get(`/api/appointments/${dia}/${mes}`, {
-          headers: {},
-        })
-        setAppointments(response.data)
-        console.log(response.data)
+        if (dataSelecionada) {
+          const { dia, mes } = dataSelecionada
+          const response = await api.get(`/api/appointments/${dia}/${mes}`, {
+            headers: {},
+          })
+          setAppointments(response.data)
+          console.log(response.data)
+        }
       } catch (error) {
         console.error('Error fetching appointments:', error)
       }
     }
 
     fetchAppointments()
-  }, [])
+  }, [dataSelecionada])
 
-  // Função para gerar horários vagos
   const generateEmptyAppointments = (
     openingTime: string,
     closingTime: string,
@@ -49,20 +52,18 @@ export function AgendadoDia({ dataSelecionada }: DiaSelecionado) {
     const emptyAppointments: AppointmentData[] = []
     let currentTime = openingTime
 
-    // Adiciona horários vagos até o horário de fechamento, pulando o horário de almoço e os horários já agendados
     while (currentTime < closingTime) {
-      if (
-        currentTime < lunchStart ||
-        (currentTime >= lunchEnd && currentTime < closingTime)
-      ) {
-        // Verifica se o horário já foi agendado
-        if (
-          appointments.find((appointment) => appointment.time === currentTime)
-        ) {
-          currentTime = incrementTime(currentTime, 30)
-          continue
-        }
+      const isDuringLunchBreak =
+        currentTime >= lunchStart && currentTime < lunchEnd
+      const isDuringService = appointments.some((appointment) => {
+        const endTime = incrementTime(
+          appointment.time,
+          parseInt(appointment.timeservice || '0'),
+        )
+        return currentTime >= appointment.time && currentTime < endTime
+      })
 
+      if (!isDuringLunchBreak && !isDuringService) {
         emptyAppointments.push({
           dia: '',
           time: currentTime,
@@ -77,7 +78,6 @@ export function AgendadoDia({ dataSelecionada }: DiaSelecionado) {
     return emptyAppointments
   }
 
-  // Função para incrementar o horário em minutos
   const incrementTime = (time: string, minutes: number): string => {
     const [hour, minute] = time.split(':').map(Number)
     const newMinute = (minute + minutes) % 60
@@ -88,7 +88,6 @@ export function AgendadoDia({ dataSelecionada }: DiaSelecionado) {
     )}`
   }
 
-  // Gera horários vagos
   const emptyAppointments = generateEmptyAppointments(
     openingTime,
     closingTime,
@@ -97,7 +96,6 @@ export function AgendadoDia({ dataSelecionada }: DiaSelecionado) {
     appointments,
   )
 
-  // Adiciona horários vagos à lista de agendamentos
   const allAppointments = [...appointments, ...emptyAppointments].sort(
     (a, b) => (a.time > b.time ? 1 : -1),
   )
@@ -114,26 +112,26 @@ export function AgendadoDia({ dataSelecionada }: DiaSelecionado) {
         {allAppointments.map((appointment, index) => (
           <div
             key={index}
-            className="flex items-center p-2 bg-slate-200/50 rounded-xl hover:bg-[#A1D7E2] transition duration-300"
+            className={`flex items-center gap-2 p-2 bg-slate-200/50 rounded-xl cursor-pointer hover:bg-blue-100 transition duration-300 ${
+              appointment.clientName === 'Horário vago'
+                ? 'text-red-500 font-normal bg-red-100'
+                : 'text-green-500 font-semibold bg-green-100'
+            }`}
           >
-            <div
-              className={`mr-4 ${
-                appointment.clientName === 'Horário vago'
-                  ? 'text-red-500 font-normal'
-                  : 'text-green-500 font-semibold'
-              }`}
-            >
-              {appointment.time}
+            <div className="ml-1">
+              {appointment.clientName === 'Horário vago' ? (
+                <FaRegCalendarXmark size={30} />
+              ) : (
+                <FaRegCalendarCheck size={30} />
+              )}
             </div>
-            <div
-              className={`flex-1 ${
-                appointment.clientName === 'Horário vago'
-                  ? 'text-red-500 font-normal'
-                  : 'text-green-500 font-semibold'
-              }`}
-            >
+            <div className="mr-4">{appointment.time}</div>
+            <div className="flex-1">
               <div>{`Cliente: ${appointment.clientName}`}</div>
               <div>{`Serviço: ${appointment.service}`}</div>
+              {appointment.timeservice && (
+                <div>{`Tempo de serviço: ${appointment.timeservice}`}</div>
+              )}
             </div>
           </div>
         ))}
