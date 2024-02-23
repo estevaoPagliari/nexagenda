@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { api } from '../api/api'
 import { FaRegCalendarCheck, FaRegCalendarXmark } from 'react-icons/fa6'
+import { HorarioFuncionamento } from '../api/interface/InterHorarioFuncionamento'
+import { LoadHorario } from '../api/HorarioFuncionamento'
 
 // Definição da interface para os dados de cada agendamento
 interface AppointmentData {
@@ -17,17 +19,50 @@ interface DiaSelecionado {
 }
 
 // Componente funcional AgendadoDia
-export function AgendadoDia({ dataSelecionada }: DiaSelecionado) {
+export function AgendadoDia({
+  dataSelecionada,
+  id,
+}: {
+  dataSelecionada: DiaSelecionado['dataSelecionada']
+  id?: number
+}) {
+  // Estado para armazenar os agendamentos
+  const [appointments, setAppointments] = useState<AppointmentData[]>([])
+  // Funcao Consumo Api
+  const [userHorario, setUserHorario] = useState<HorarioFuncionamento | null>(
+    null,
+  )
+
+  async function fetchUserHorario() {
+    try {
+      const idString: string = id !== undefined ? id.toString() : ''
+      const data = await LoadHorario(idString) // Passe o userId para a função Loaduser
+      setUserHorario(data)
+    } catch (error) {
+      // Trate erros, se necessário
+      console.error('Erro ao carregar dados do usuário:', error)
+    }
+  }
+  useEffect(() => {
+    if (id !== undefined) {
+      fetchUserHorario()
+    } else console.log('valor nao carregado')
+  }, [id])
+  let teste: string | undefined
+  useEffect(() => {
+    console.log('NOVO')
+    console.log(userHorario)
+    teste = userHorario?.horarioAbertura
+    console.log(teste)
+  }, [userHorario, teste])
   // Definição dos horários de abertura, fechamento e almoço
   const openingTime = '09:00'
   const closingTime = '21:00'
   const lunchStart = '12:00'
   const lunchEnd = '13:30'
 
-  // Estado para armazenar os agendamentos
-  const [appointments, setAppointments] = useState<AppointmentData[]>([])
-
   // Efeito para buscar os agendamentos quando a data selecionada mudar
+
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
@@ -126,6 +161,13 @@ export function AgendadoDia({ dataSelecionada }: DiaSelecionado) {
       <div>
         <p>{dataSelecionada?.dia}/</p>
         <p>{dataSelecionada?.mes}</p>
+        {userHorario && (
+          <div>
+            <h1>OI</h1>
+            {teste}
+            {userHorario.id}
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-4">

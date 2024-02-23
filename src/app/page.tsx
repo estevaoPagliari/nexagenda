@@ -15,28 +15,23 @@ export default function Home() {
   } | null>(null)
 
   const [userData, setUserData] = useState<userEstabelecimento | null>(null)
-
-  useEffect(() => {
-    // Chame a função Loaduser quando o componente for montado
-    async function fetchUserData() {
-      try {
-        const data = await Loaduser() // Passe o userId para a função Loaduser
-        setUserData(data)
-        console.log(data)
-        // setUserData(data)
-      } catch (error) {
-        // Trate erros, se necessário
-        console.error('Erro ao carregar dados do usuário:', error)
-      }
+  // Chame a função Loaduser quando o componente for montado
+  async function fetchUserData() {
+    try {
+      const data = await Loaduser() // Passe o userId para a função Loaduser
+      setUserData(data)
+      // setUserData(data)
+    } catch (error) {
+      // Trate erros, se necessário
+      console.error('Erro ao carregar dados do usuário:', error)
     }
-
-    fetchUserData() // Chame a função fetchUserData
-  }, []) // Re-renderize o componente sempre que userId mudar
+  }
 
   useEffect(() => {
     const diaAtual = new Date().getDate()
     const mesAtual = new Date().getMonth() + 1
     setDataSelecionada({ dia: diaAtual, mes: mesAtual })
+    fetchUserData()
   }, [])
 
   const handleDataSelecionada = (data: { dia: number; mes: number }) => {
@@ -45,10 +40,9 @@ export default function Home() {
 
   return (
     <div>
-      <MenuSideBar />
-
+      {userData?.id}
       <div className=" flex-col ml-16 sm:flex-row md:flex-row">
-        <Welcome />
+        <Welcome nome={userData?.nome || ''} />
 
         <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-2 p-1 mt-5">
           {/* Conteúdo da coluna 1 */}
@@ -56,23 +50,8 @@ export default function Home() {
           {/* Conteúdo da coluna 2 */}
 
           {/* Conteúdo da coluna 3 */}
-          <AgendadoDia dataSelecionada={dataSelecionada} />
+          <AgendadoDia dataSelecionada={dataSelecionada} id={userData?.id} />
         </div>
-      </div>
-      <div className="ml-28">
-        {/* Exibe os dados do usuário, se disponíveis */}
-        {userData ? (
-          <div>
-            <h2>Dados do usuário</h2>
-            <p>CPF: {userData.cpf}</p>
-            <p>Nome: {userData.nome}</p>
-            <p>Email: {userData.email}</p>{' '}
-            {/* Corrigido de "Email.:" para "Email:" */}
-            {/* Adicione outros campos conforme necessário */}
-          </div>
-        ) : (
-          <p>Dados do usuário não disponíveis</p>
-        )}
       </div>
     </div>
   )
