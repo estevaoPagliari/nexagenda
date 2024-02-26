@@ -1,8 +1,8 @@
 import { tipoServico } from './InterTipoServico'
 import { userEstabelecimento } from './InterUserEstabelecimento'
 import { userCliente } from './interUserCliente'
-import { recurso } from './InterRecurso'
-export interface agenda {
+import { Recurso } from './InterRecurso'
+export interface Agenda {
   id: number // Int
   dia: number // Int
   mes: number // Int
@@ -15,5 +15,5 @@ export interface agenda {
   TipoServico: tipoServico[] // Relacionamento com TipoServico
   Estabelecimento: userEstabelecimento[] // Relacionamento com UserEstabelecimento
   Cliente: userCliente[] // Relacionamento com UserCliente
-  Recurso: recurso[] // Relacionamento com Recurso
+  Recurso: Recurso[] // Relacionamento com Recurso
 }

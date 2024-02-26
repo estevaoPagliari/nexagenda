@@ -20,7 +20,7 @@ export default function Home() {
     try {
       const data = await Loaduser() // Passe o userId para a função Loaduser
       setUserData(data)
-      console.log(data)
+      // console.log(data)
       // setUserData(data)
     } catch (error) {
       // Trate erros, se necessário

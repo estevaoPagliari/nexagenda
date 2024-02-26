@@ -1,10 +1,11 @@
 import { userEstabelecimento } from './InterUserEstabelecimento'
-import { agenda } from './InterAgenda'
 
-export interface recurso {
+export interface HorarioFuncionamento {
   id: number // Int
-  nome: string // String
+  horarioAbertura: string // String
+  horarioAlmocoInicio: string // String
+  horarioAlmocoFim: string // String
+  horarioFechamento: string // String
   estabelecimentoId: number // Int
   Estabelecimento: userEstabelecimento[] // Relacionamento com UserEstabelecimento
-  Agenda: agenda[] // Array de Agenda
 }

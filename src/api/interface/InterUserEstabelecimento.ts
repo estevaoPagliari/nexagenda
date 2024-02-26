@@ -1,8 +1,8 @@
 import { tipoServico } from './InterTipoServico'
-import { agenda } from './InterAgenda'
-import { endereco } from './InterEndereco'
-import { recurso } from './InterRecurso'
-import { HorarioFuncionamento } from './interHorarioFuncionamento'
+import { Agenda } from './InterAgenda'
+import { Endereco } from './InterEndereco'
+import { Recurso } from './InterRecurso'
+import { HorarioFuncionamento } from './InterHorarioFuncionamento'
 export interface userEstabelecimento {
   id: number // Int
   nome: string // String
@@ -12,9 +12,9 @@ export interface userEstabelecimento {
   telefone: number // Int
   createdAt: Date // DateTime
   updatedAt: Date // DateTime
-  Endereco: endereco[] // Array de Endereco
+  Endereco: Endereco[] // Array de Endereco
   TipoServico: tipoServico[] // Array de TipoServico
-  Recursos: recurso[] // Array de Recurso
-  Agenda: agenda[] // Array de Agenda
+  Recursos: Recurso[] // Array de Recurso
+  Agenda: Agenda[] // Array de Agenda
   HorarioFuncionamento: HorarioFuncionamento[] // Array de HorarioFuncionamento
 }

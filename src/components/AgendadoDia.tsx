@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { api } from '../api/api'
 import { FaRegCalendarCheck, FaRegCalendarXmark } from 'react-icons/fa6'
 import { HorarioFuncionamento } from '../api/interface/InterHorarioFuncionamento'
+import { Agenda } from '../api/interface/InterAgenda'
 import { LoadHorario } from '../api/HorarioFuncionamento'
 import { LoadAgendaDia } from '@/api/Agendamento'
 import { FadeLoader } from 'react-spinners'
@@ -38,6 +39,8 @@ export function AgendadoDia({
   // Funcao Consumo Api
   const [userHorario, setUserHorario] = useState<HorarioFuncionamento[]>([])
 
+  const [userAgenda, setUserAgenda] = useState<Agenda[]>([])
+
   // consulta a api e retorna horario de funcionamento
   async function fetchUserHorario() {
     try {
@@ -54,16 +57,30 @@ export function AgendadoDia({
   async function fetchAgendaDia() {
     try {
       const agenda = await LoadAgendaDia('4', '24', '2')
-      console.log(agenda)
-      const { TipoServico } = agenda
+      await setUserAgenda(agenda)
+      console.log(userAgenda)
     } catch (error) {
       console.error('Erro ao carregar dados do usuário:', error)
     }
   }
 
+  const fetchAppointments = async () => {
+    try {
+      if (dataSelecionada) {
+        const { dia, mes } = dataSelecionada
+        const response = await api.get(`/api/appointments/${dia}/${mes}`, {
+          headers: {},
+        })
+        fetchAgendaDia()
+        setAppointments(response.data)
+      }
+    } catch (error) {
+      console.error('Error fetching appointments:', error)
+    }
+  }
+
   useEffect(() => {
     if (id !== undefined) {
-      // console.log(id)
       fetchUserHorario()
       fetchAgendaDia()
     } else console.log('valor nao carregado')
@@ -71,7 +88,6 @@ export function AgendadoDia({
 
   useEffect(() => {
     if (userHorario[0] !== undefined) {
-      console.log(userHorario[0])
       openingTime = userHorario[0].horarioAbertura
       closingTime = userHorario[0].horarioFechamento
       lunchStart = userHorario[0].horarioAlmocoInicio
@@ -79,23 +95,7 @@ export function AgendadoDia({
     }
   }, [userHorario[0]])
 
-  // Definição dos horários de abertura, fechamento e almoço
-
-  // Efeito para buscar os agendamentos quando a data selecionada mudar
   useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        if (dataSelecionada) {
-          const { dia, mes } = dataSelecionada
-          const response = await api.get(`/api/appointments/${dia}/${mes}`, {
-            headers: {},
-          })
-          setAppointments(response.data)
-        }
-      } catch (error) {
-        console.error('Error fetching appointments:', error)
-      }
-    }
     fetchAppointments()
   }, [dataSelecionada])
 
@@ -230,6 +230,22 @@ export function AgendadoDia({
                 </div>
               ))}
             </div>
+            {userAgenda.map((agenda, index) => (
+              <div key={index} className="flex flex-row gap-2">
+                <div>
+                  <p>{agenda.dia}</p>
+                  <p>{agenda.mes}</p>
+                  <p>{agenda.horario}</p>
+                </div>
+
+                {agenda.Estabelecimento && ( // Verifique se Estabelecimento está definido
+                  <div>
+                    <p>Estabelecimento: {agenda.Estabelecimento.nome}</p>
+                    {/* Acesse outros campos de Estabelecimento conforme necessário */}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       ) : (
