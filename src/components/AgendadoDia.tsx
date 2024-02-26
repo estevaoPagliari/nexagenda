@@ -3,6 +3,8 @@ import { api } from '../api/api'
 import { FaRegCalendarCheck, FaRegCalendarXmark } from 'react-icons/fa6'
 import { HorarioFuncionamento } from '../api/interface/InterHorarioFuncionamento'
 import { LoadHorario } from '../api/HorarioFuncionamento'
+import { LoadAgendaDia } from '@/api/Agendamento'
+import { FadeLoader } from 'react-spinners'
 
 // Definição da interface para os dados de cada agendamento
 interface AppointmentData {
@@ -12,6 +14,11 @@ interface AppointmentData {
   service: string
   timeservice?: string
 }
+
+let openingTime = ''
+let closingTime = ''
+let lunchStart = ''
+let lunchEnd = ''
 
 // Definição da interface para os dados da data selecionada
 interface DiaSelecionado {
@@ -29,40 +36,52 @@ export function AgendadoDia({
   // Estado para armazenar os agendamentos
   const [appointments, setAppointments] = useState<AppointmentData[]>([])
   // Funcao Consumo Api
-  const [userHorario, setUserHorario] = useState<HorarioFuncionamento | null>(
-    null,
-  )
+  const [userHorario, setUserHorario] = useState<HorarioFuncionamento[]>([])
 
+  // consulta a api e retorna horario de funcionamento
   async function fetchUserHorario() {
     try {
       const idString: string = id !== undefined ? id.toString() : ''
       const data = await LoadHorario(idString) // Passe o userId para a função Loaduser
-      setUserHorario(data)
+      await setUserHorario(data)
+      return data
     } catch (error) {
       // Trate erros, se necessário
       console.error('Erro ao carregar dados do usuário:', error)
     }
   }
+
+  async function fetchAgendaDia() {
+    try {
+      const agenda = await LoadAgendaDia('4', '24', '2')
+      console.log(agenda)
+      const { TipoServico } = agenda
+    } catch (error) {
+      console.error('Erro ao carregar dados do usuário:', error)
+    }
+  }
+
   useEffect(() => {
     if (id !== undefined) {
+      // console.log(id)
       fetchUserHorario()
+      fetchAgendaDia()
     } else console.log('valor nao carregado')
   }, [id])
-  let teste: string | undefined
+
   useEffect(() => {
-    console.log('NOVO')
-    console.log(userHorario)
-    teste = userHorario?.horarioAbertura
-    console.log(teste)
-  }, [userHorario, teste])
+    if (userHorario[0] !== undefined) {
+      console.log(userHorario[0])
+      openingTime = userHorario[0].horarioAbertura
+      closingTime = userHorario[0].horarioFechamento
+      lunchStart = userHorario[0].horarioAlmocoInicio
+      lunchEnd = userHorario[0].horarioAlmocoFim
+    }
+  }, [userHorario[0]])
+
   // Definição dos horários de abertura, fechamento e almoço
-  const openingTime = '09:00'
-  const closingTime = '21:00'
-  const lunchStart = '12:00'
-  const lunchEnd = '13:30'
 
   // Efeito para buscar os agendamentos quando a data selecionada mudar
-
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
@@ -77,7 +96,6 @@ export function AgendadoDia({
         console.error('Error fetching appointments:', error)
       }
     }
-
     fetchAppointments()
   }, [dataSelecionada])
 
@@ -156,48 +174,69 @@ export function AgendadoDia({
 
   // Retornar o JSX do componente
   return (
-    <div className="bg-slate-200/40 rounded-xl py-8 px-4 sm:px-6 lg:px-8 overflow-y-auto h-96">
-      <h1 className="text-3x1 font-bold mb-8">Agenda do Estabelecimento</h1>
-      <div>
-        <p>{dataSelecionada?.dia}/</p>
-        <p>{dataSelecionada?.mes}</p>
-        {userHorario && (
+    <div className="bg-slate-200/40 rounded-xl py-2 px-4 sm:px-4 lg:px-6 overflow-y-auto h-96">
+      {userHorario && userHorario.length > 0 ? (
+        <div>
           <div>
-            <h1>OI</h1>
-            {teste}
-            {userHorario.id}
-          </div>
-        )}
-      </div>
+            <div className="flex flex-row mb-8  items-center justify-between">
+              <h1 className="text-2xl font-semibold">
+                Agenda do Estabelecimento
+              </h1>
+              <p className="text-xl font-semibold">
+                Dia Selecionado : {dataSelecionada?.dia} /{' '}
+                {dataSelecionada?.mes}
+              </p>
+            </div>
 
-      <div className="grid grid-cols-1 gap-4">
-        {allAppointments.map((appointment, index) => (
-          <div
-            key={index}
-            className={`flex items-center gap-2 p-2 bg-slate-200/50 rounded-xl cursor-pointer hover:bg-blue-100 transition duration-300 ${
-              appointment.clientName === 'Horário vago'
-                ? 'text-red-500 font-normal bg-red-100'
-                : 'text-green-500 font-semibold bg-green-100'
-            }`}
-          >
-            <div className="ml-1">
-              {appointment.clientName === 'Horário vago' ? (
-                <FaRegCalendarXmark size={30} />
-              ) : (
-                <FaRegCalendarCheck size={30} />
+            <div>
+              {/* Este é um comentário em JSX 
+              {userHorario && userHorario.length > 0 && (
+                <div>
+                  <div>{userHorario[0].horarioAbertura}</div>
+                  <div>{userHorario[0].horarioAlmocoInicio}</div>
+                  <div>{userHorario[0].horarioAlmocoFim}</div>
+                  <div>{userHorario[0].horarioFechamento}</div>
+                </div>
+                
               )}
+              */}
             </div>
-            <div className="mr-4">{appointment.time}</div>
-            <div className="flex-1">
-              <div>{`Cliente: ${appointment.clientName}`}</div>
-              <div>{`Serviço: ${appointment.service}`}</div>
-              {appointment.timeservice && (
-                <div>{`Tempo de serviço: ${appointment.timeservice}`}</div>
-              )}
+
+            <div className="grid grid-cols-1 gap-4">
+              {allAppointments.map((appointment, index) => (
+                <div
+                  key={index}
+                  className={`flex items-center gap-2 p-2 bg-slate-200/50 rounded-xl cursor-pointer hover:bg-blue-100 transition duration-300 ${
+                    appointment.clientName === 'Horário vago'
+                      ? 'text-red-500 font-normal bg-red-100'
+                      : 'text-green-500 font-semibold bg-green-100'
+                  }`}
+                >
+                  <div className="ml-1">
+                    {appointment.clientName === 'Horário vago' ? (
+                      <FaRegCalendarXmark size={30} />
+                    ) : (
+                      <FaRegCalendarCheck size={30} />
+                    )}
+                  </div>
+                  <div className="mr-4">{appointment.time}</div>
+                  <div className="flex-1">
+                    <div>{`Cliente: ${appointment.clientName}`}</div>
+                    <div>{`Serviço: ${appointment.service}`}</div>
+                    {appointment.timeservice && (
+                      <div>{`Tempo de serviço: ${appointment.timeservice}`}</div>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ) : (
+        <div className="flex flex-1 justify-center items-center h-80">
+          <FadeLoader color="#A1D7E2" loading={true} />
+        </div>
+      )}
     </div>
   )
 }

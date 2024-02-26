@@ -1,5 +1,5 @@
 'use client'
-import { AgendamentoDia } from '@/components/AgendamentoDia'
+
 import { MenuSideBar } from '@/components/MenuSideBar'
 import { Welcome } from '@/components/Welcome'
 import { Calendario } from '@/components/Calendario'
@@ -20,6 +20,7 @@ export default function Home() {
     try {
       const data = await Loaduser() // Passe o userId para a função Loaduser
       setUserData(data)
+      console.log(data)
       // setUserData(data)
     } catch (error) {
       // Trate erros, se necessário
@@ -40,7 +41,8 @@ export default function Home() {
 
   return (
     <div>
-      {userData?.id}
+      <MenuSideBar />
+
       <div className=" flex-col ml-16 sm:flex-row md:flex-row">
         <Welcome nome={userData?.nome || ''} />
 
