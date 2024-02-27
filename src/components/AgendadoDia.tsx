@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { api } from '../api/api'
 import { FaRegCalendarCheck, FaRegCalendarXmark } from 'react-icons/fa6'
 import { HorarioFuncionamento } from '../api/interface/InterHorarioFuncionamento'
+import { userEstabelecimento } from '../api/interface/InterUserEstabelecimento'
 import { Agenda } from '../api/interface/InterAgenda'
 import { LoadHorario } from '../api/HorarioFuncionamento'
 import { LoadAgendaDia } from '@/api/Agendamento'
@@ -20,6 +21,10 @@ let openingTime = ''
 let closingTime = ''
 let lunchStart = ''
 let lunchEnd = ''
+
+const idString = ''
+const diastring = ''
+const messtring = ''
 
 // Definição da interface para os dados da data selecionada
 interface DiaSelecionado {
@@ -54,9 +59,13 @@ export function AgendadoDia({
     }
   }
 
-  async function fetchAgendaDia() {
+  async function fetchAgendaDia(
+    idstring: string,
+    diastring: string,
+    messtring: string,
+  ) {
     try {
-      const agenda = await LoadAgendaDia('4', '24', '2')
+      const agenda = await LoadAgendaDia(idstring, diastring, messtring)
       await setUserAgenda(agenda)
       console.log(userAgenda)
     } catch (error) {
@@ -71,7 +80,10 @@ export function AgendadoDia({
         const response = await api.get(`/api/appointments/${dia}/${mes}`, {
           headers: {},
         })
-        fetchAgendaDia()
+        const idString: string = id !== undefined ? id.toString() : ''
+        const diastring: string = dia !== undefined ? dia.toString() : ''
+        const messtring: string = mes !== undefined ? mes.toString() : ''
+        await fetchAgendaDia(idString, diastring, messtring)
         setAppointments(response.data)
       }
     } catch (error) {
@@ -82,7 +94,6 @@ export function AgendadoDia({
   useEffect(() => {
     if (id !== undefined) {
       fetchUserHorario()
-      fetchAgendaDia()
     } else console.log('valor nao carregado')
   }, [id])
 
@@ -230,22 +241,28 @@ export function AgendadoDia({
                 </div>
               ))}
             </div>
-            {userAgenda.map((agenda, index) => (
-              <div key={index} className="flex flex-row gap-2">
-                <div>
-                  <p>{agenda.dia}</p>
-                  <p>{agenda.mes}</p>
-                  <p>{agenda.horario}</p>
-                </div>
 
-                {agenda.Estabelecimento && ( // Verifique se Estabelecimento está definido
-                  <div>
-                    <p>Estabelecimento: {agenda.Estabelecimento.nome}</p>
-                    {/* Acesse outros campos de Estabelecimento conforme necessário */}
+            {userAgenda ? (
+              userAgenda.map((agenda, index) => (
+                <div key={index} className="flex flex-row gap-2">
+                  <div className="flex justify-center items-center p-5">
+                    <p>{agenda.horario}</p>
                   </div>
-                )}
-              </div>
-            ))}
+                  <div className="flex flex-row gap-2">
+                    {agenda.Estabelecimento && (
+                      <div>
+                        <p>Cliente: {agenda.Cliente.nome}</p>
+                        <p>Serviço: {agenda.TipoServico.nome}</p>
+                        <p>Tempo: {agenda.TipoServico.tempoServico}</p>
+                        {/* Acesse outros campos de Estabelecimento conforme necessário */}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>Carregando...</p>
+            )}
           </div>
         </div>
       ) : (
