@@ -2,29 +2,15 @@ import React, { useState, useEffect } from 'react'
 import { api } from '../api/api'
 import { FaRegCalendarCheck, FaRegCalendarXmark } from 'react-icons/fa6'
 import { HorarioFuncionamento } from '../api/interface/InterHorarioFuncionamento'
-import { userEstabelecimento } from '../api/interface/InterUserEstabelecimento'
-import { Agenda } from '../api/interface/InterAgenda'
+import { AgendaNew } from '../api/interface/InterAgenda'
 import { LoadHorario } from '../api/HorarioFuncionamento'
 import { LoadAgendaDia } from '@/api/Agendamento'
-import { FadeLoader } from 'react-spinners'
-
-// Definição da interface para os dados de cada agendamento
-interface AppointmentData {
-  dia: string
-  time: string
-  clientName: string
-  service: string
-  timeservice?: string
-}
+import { FadeLoader, BarLoader } from 'react-spinners'
 
 let openingTime = ''
 let closingTime = ''
 let lunchStart = ''
 let lunchEnd = ''
-
-const idString = ''
-const diastring = ''
-const messtring = ''
 
 // Definição da interface para os dados da data selecionada
 interface DiaSelecionado {
@@ -40,11 +26,11 @@ export function AgendadoDia({
   id?: number
 }) {
   // Estado para armazenar os agendamentos
-  const [appointments, setAppointments] = useState<AppointmentData[]>([])
+  const [appointments, setAppointments] = useState<AgendaNew[]>([])
   // Funcao Consumo Api
   const [userHorario, setUserHorario] = useState<HorarioFuncionamento[]>([])
 
-  const [userAgenda, setUserAgenda] = useState<Agenda[]>([])
+  const [userAgenda, setUserAgenda] = useState<AgendaNew[]>([])
 
   // consulta a api e retorna horario de funcionamento
   async function fetchUserHorario() {
@@ -77,13 +63,12 @@ export function AgendadoDia({
     try {
       if (dataSelecionada) {
         const { dia, mes } = dataSelecionada
-        const response = await api.get(`/api/appointments/${dia}/${mes}`, {
-          headers: {},
-        })
-        const idString: string = id !== undefined ? id.toString() : ''
-        const diastring: string = dia !== undefined ? dia.toString() : ''
-        const messtring: string = mes !== undefined ? mes.toString() : ''
-        await fetchAgendaDia(idString, diastring, messtring)
+        const response = await api.get(
+          `/agendaservicodiaestabelecimento/${id}/${dia}/${mes}`,
+          {
+            headers: {},
+          },
+        )
         setAppointments(response.data)
       }
     } catch (error) {
@@ -94,6 +79,7 @@ export function AgendadoDia({
   useEffect(() => {
     if (id !== undefined) {
       fetchUserHorario()
+      fetchAppointments()
     } else console.log('valor nao carregado')
   }, [id])
 
@@ -115,19 +101,19 @@ export function AgendadoDia({
     closingTime: string,
     lunchStart: string,
     lunchEnd: string,
-    appointments: AppointmentData[],
+    appointments: AgendaNew[],
   ) => {
-    const emptyAppointments: AppointmentData[] = []
+    const emptyAppointments: AgendaNew[] = []
     let currentTime = openingTime
 
     // Criar uma lista de todos os horários ocupados
     const occupiedTimes: { startTime: string; endTime: string }[] = []
     appointments.forEach((appointment) => {
       const endTime = incrementTime(
-        appointment.time,
-        parseInt(appointment.timeservice || '0'),
+        appointment.horario,
+        parseInt(appointment.TipoServico.tempoServico || '0'),
       )
-      occupiedTimes.push({ startTime: appointment.time, endTime })
+      occupiedTimes.push({ startTime: appointment.horario, endTime })
     })
 
     // Gerar uma lista de todos os horários possíveis no intervalo de horário de trabalho
@@ -145,10 +131,46 @@ export function AgendadoDia({
       // Se o horário não estiver ocupado e não estiver durante o intervalo de almoço, adicionar à lista de horários vazios
       if (!isDuringLunchBreak && !isDuringService) {
         emptyAppointments.push({
-          dia: '',
-          time: currentTime,
-          clientName: 'Horário vago',
-          service: 'Nenhum serviço agendado',
+          horario: currentTime,
+          Cliente: {
+            id: 0,
+            nome: 'Horário vago',
+            email: '',
+            senha: '',
+            cpf: 0,
+            telefone: 0,
+            createdAt: '',
+            updatedAt: '',
+          },
+          TipoServico: {
+            id: 0,
+            nome: 'Nenhum serviço agendado',
+            tempoServico: '',
+            UserEstabelecimentoId: 0,
+          },
+          id: 0,
+          dia: 0,
+          mes: 0,
+          ano: 0,
+          tipoServicoId: 0,
+          estabelecimentoId: 0,
+          clienteId: 0,
+          recursoId: 0,
+          Estabelecimento: {
+            id: 0,
+            nome: '',
+            email: '',
+            senha: '',
+            cpf: 0,
+            telefone: 0,
+            createdAt: '',
+            updatedAt: '',
+          },
+          Recurso: {
+            id: 0,
+            nome: '',
+            estabelecimentoId: 0,
+          },
         })
       }
 
@@ -180,7 +202,7 @@ export function AgendadoDia({
 
   // Concatenar os agendamentos com os horários vazios e ordená-los
   const allAppointments = [...appointments, ...emptyAppointments].sort(
-    (a, b) => (a.time > b.time ? 1 : -1),
+    (a, b) => (a.horario > b.horario ? 1 : -1),
   )
 
   // Retornar o JSX do componente
@@ -198,70 +220,39 @@ export function AgendadoDia({
                 {dataSelecionada?.mes}
               </p>
             </div>
-
-            <div>
-              {/* Este é um comentário em JSX 
-              {userHorario && userHorario.length > 0 && (
-                <div>
-                  <div>{userHorario[0].horarioAbertura}</div>
-                  <div>{userHorario[0].horarioAlmocoInicio}</div>
-                  <div>{userHorario[0].horarioAlmocoFim}</div>
-                  <div>{userHorario[0].horarioFechamento}</div>
-                </div>
-                
-              )}
-              */}
-            </div>
-
-            <div className="grid grid-cols-1 gap-4">
-              {allAppointments.map((appointment, index) => (
-                <div
-                  key={index}
-                  className={`flex items-center gap-2 p-2 bg-slate-200/50 rounded-xl cursor-pointer hover:bg-blue-100 transition duration-300 ${
-                    appointment.clientName === 'Horário vago'
-                      ? 'text-red-500 font-normal bg-red-100'
-                      : 'text-green-500 font-semibold bg-green-100'
-                  }`}
-                >
-                  <div className="ml-1">
-                    {appointment.clientName === 'Horário vago' ? (
-                      <FaRegCalendarXmark size={30} />
-                    ) : (
-                      <FaRegCalendarCheck size={30} />
-                    )}
-                  </div>
-                  <div className="mr-4">{appointment.time}</div>
-                  <div className="flex-1">
-                    <div>{`Cliente: ${appointment.clientName}`}</div>
-                    <div>{`Serviço: ${appointment.service}`}</div>
-                    {appointment.timeservice && (
-                      <div>{`Tempo de serviço: ${appointment.timeservice}`}</div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-
             {userAgenda ? (
-              userAgenda.map((agenda, index) => (
-                <div key={index} className="flex flex-row gap-2">
-                  <div className="flex justify-center items-center p-5">
-                    <p>{agenda.horario}</p>
+              <div className="grid grid-cols-1 gap-4">
+                {allAppointments.map((appointment, index) => (
+                  <div
+                    key={index}
+                    className={`flex items-center gap-2 p-2 bg-slate-200/50 rounded-xl cursor-pointer hover:bg-blue-100 transition duration-300 ${
+                      appointment.Cliente.nome === 'Horário vago'
+                        ? 'text-red-500 font-normal bg-red-100'
+                        : 'text-green-500 font-semibold bg-green-100'
+                    }`}
+                  >
+                    <div className="ml-1">
+                      {appointment.Cliente.nome === 'Horário vago' ? (
+                        <FaRegCalendarXmark size={30} />
+                      ) : (
+                        <FaRegCalendarCheck size={30} />
+                      )}
+                    </div>
+                    <div className="mr-4">{appointment.horario}</div>
+                    <div className="flex-1">
+                      <div>{`Cliente: ${appointment.Cliente.nome}`}</div>
+                      <div>{`Serviço: ${appointment.TipoServico.nome}`}</div>
+                      {appointment.TipoServico && (
+                        <div>{`Tempo de serviço: ${appointment.TipoServico.tempoServico}`}</div>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex flex-row gap-2">
-                    {agenda.Estabelecimento && (
-                      <div>
-                        <p>Cliente: {agenda.Cliente.nome}</p>
-                        <p>Serviço: {agenda.TipoServico.nome}</p>
-                        <p>Tempo: {agenda.TipoServico.tempoServico}</p>
-                        {/* Acesse outros campos de Estabelecimento conforme necessário */}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))
+                ))}
+              </div>
             ) : (
-              <p>Carregando...</p>
+              <div className="flex flex-1 h-80">
+                <BarLoader color="#A1D7E2" loading={true} />
+              </div>
             )}
           </div>
         </div>

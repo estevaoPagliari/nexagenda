@@ -17,3 +17,46 @@ export interface Agenda {
   Cliente: userCliente[] // Relacionamento com UserCliente
   Recurso: Recurso[] // Relacionamento com Recurso
 }
+
+export interface AgendaNew {
+  id: number
+  dia: number
+  mes: number
+  ano: number
+  horario: string
+  tipoServicoId: number
+  estabelecimentoId: number
+  clienteId: number
+  recursoId: number
+  TipoServico: {
+    id: number
+    nome: string
+    tempoServico: string
+    UserEstabelecimentoId: number
+  }
+  Estabelecimento: {
+    id: number
+    nome: string
+    email: string
+    senha: string
+    cpf: number
+    telefone: number
+    createdAt: string
+    updatedAt: string
+  }
+  Recurso: {
+    id: number
+    nome: string
+    estabelecimentoId: number
+  }
+  Cliente: {
+    id: number
+    nome: string
+    email: string
+    senha: string
+    cpf: number
+    telefone: number
+    createdAt: string
+    updatedAt: string
+  }
+}
