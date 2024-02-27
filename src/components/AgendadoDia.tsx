@@ -45,20 +45,6 @@ export function AgendadoDia({
     }
   }
 
-  async function fetchAgendaDia(
-    idstring: string,
-    diastring: string,
-    messtring: string,
-  ) {
-    try {
-      const agenda = await LoadAgendaDia(idstring, diastring, messtring)
-      await setUserAgenda(agenda)
-      console.log(userAgenda)
-    } catch (error) {
-      console.error('Erro ao carregar dados do usuário:', error)
-    }
-  }
-
   const fetchAppointments = async () => {
     try {
       if (dataSelecionada) {
