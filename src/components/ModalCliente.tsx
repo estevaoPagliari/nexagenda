@@ -1,4 +1,3 @@
-import { MouseEventHandler } from 'react'
 import { CgClose } from 'react-icons/cg'
 
 interface ModalClienteProps {

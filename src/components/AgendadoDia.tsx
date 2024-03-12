@@ -4,7 +4,6 @@ import { FaRegCalendarCheck, FaRegCalendarXmark } from 'react-icons/fa6'
 import { HorarioFuncionamento } from '../api/interface/InterHorarioFuncionamento'
 import { AgendaNew } from '../api/interface/InterAgenda'
 import { LoadHorario } from '../api/HorarioFuncionamento'
-import { LoadAgendaDia } from '@/api/Agendamento'
 import { FadeLoader, BarLoader } from 'react-spinners'
 
 let openingTime = ''
