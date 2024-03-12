@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import { Loaduser } from '@/api/userestabelecimento'
 import { userEstabelecimento } from '@/api/interface/InterUserEstabelecimento'
 
-export default function Home() {
+export default function Agenda() {
   const [dataSelecionada, setDataSelecionada] = useState<{
     dia: number
     mes: number

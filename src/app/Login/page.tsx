@@ -3,7 +3,8 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { handleOAuthCode } from '@/api/login'
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 const schema = yup.object({
   email: yup.string().email('Email Invalido').required('Campo obrigatório'),
@@ -14,6 +15,7 @@ const schema = yup.object({
 })
 
 export default function Login() {
+  const router = useRouter()
   const {
     control,
     handleSubmit,
@@ -31,24 +33,31 @@ export default function Login() {
     console.log('teste')
     const { email, senha } = data
     console.log(data)
-    handleOAuthCode(email, senha)
-  }
-
-  function trocarpagina() {
-    console.log('teste')
-    redirect('./src/app/Calendario/page.tsx')
+    const IsAuthenticated = await handleOAuthCode(email, senha)
+    if (IsAuthenticated) {
+      router.push('/agenda')
+    }
   }
 
   return (
-    <div className="grid min-h-screen grid-cols-1 items-center">
-      Bem-vindo ao NexAgenda
-      <div className="w-96 h-96 bg-[#A1D7E2] mx-auto rounded-lg shadow-2xl p-4">
+    <div className="grid min-h-screen grid-rows-6 items-center">
+      <div className="flex items-center justify-center row-span-1">
+        <Image
+          src="/logo.png"
+          width={150}
+          height={150}
+          quality={100}
+          alt="Picture of the author"
+        />
+      </div>
+
+      <div className="w-96 h-96 bg-[#A1D7E2] mx-auto rounded-lg shadow-2xl p-4 px-4 row-span-5">
         {/* Header */}
-        <div className=" flex justify-start font-semibold text-2xl">Login</div>
-        <div className=" flex justify-start font-light text-sm">
-          Informe sua email e senha
+        <div className="flex-row  gap-4">
+          <div className="font-semibold text-2xl">Login</div>
         </div>
-        <div className="flex flex-col p-4 gap-4">
+
+        <div className="flex flex-col py-3 gap-4">
           <Controller
             control={control}
             name="email"
@@ -82,19 +91,13 @@ export default function Login() {
           {errors.senha && <text>{errors.senha?.message}</text>}
 
           <button
-            className="transition text-slate-100 font-semibold rounded-md ease-in-out delay-150 bg-black hover:-translate-y-1 hover:scale-110 hover:bg-slate-600 duration-300 "
+            className="h-10 transition text-slate-100 font-semibold rounded-md ease-in-out delay-150 bg-black hover:-translate-y-1 hover:scale-110 hover:bg-slate-600 duration-300 "
             onClick={handleSubmit(handleCreateUser)}
           >
             Login
           </button>
-
-          <button
-            className="transition text-slate-100 font-semibold rounded-md ease-in-out delay-150 bg-black hover:-translate-y-1 hover:scale-110 hover:bg-slate-600 duration-300 "
-            onClick={trocarpagina}
-          >
-            Teste
-          </button>
         </div>
+        <div>Registra-se</div>
       </div>
     </div>
   )

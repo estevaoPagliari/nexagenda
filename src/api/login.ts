@@ -1,7 +1,5 @@
-import { NextResponse } from 'next/server'
 import { api } from './api'
 import { setCookie } from 'nookies'
-import { redirect } from 'next/navigation'
 
 export async function handleOAuthCode(email: string, senha: string) {
   try {
@@ -18,8 +16,9 @@ export async function handleOAuthCode(email: string, senha: string) {
       path: '/', // caminho do cookie (no caso, o caminho raiz)
     })
 
-    redirect('/Home')
+    return true
   } catch (error) {
     console.error('Status do erro:', error)
+    return false
   }
 }
