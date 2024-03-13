@@ -53,7 +53,7 @@ export function Calendario({ onDataSelecionada }: CalendarioProps) {
   }
 
   return (
-    <div className="bg-slate-200/40 rounded-xl p-1 justify-center items-center h-96">
+    <div className="bg-slate-200/40 rounded-xl p-1 justify-center items-center h-[450px]">
       <div className="flex justify-between items-center mb-4">
         <FaRegArrowAltCircleLeft size={30} onClick={retrocederMes} />
         <h2 className="text-2xl font-bold">

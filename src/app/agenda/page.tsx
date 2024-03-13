@@ -1,58 +1,28 @@
-'use client'
+'use cliente'
 import { MenuSideBar } from '@/components/MenuSideBar'
 import { Welcome } from '@/components/Welcome'
-import { Calendario } from '@/components/Calendario'
-import { AgendadoDia } from '@/components/AgendadoDia'
-import { useEffect, useState } from 'react'
-import { Loaduser } from '@/api/userestabelecimento'
-import { userEstabelecimento } from '@/api/interface/InterUserEstabelecimento'
+import { getUser } from '@/lib/auth'
+import { Dashboard } from '@/components/Dashboard'
+import { ButtonLogout } from '@/components/button/Button-Logout'
+
+import { Modal } from '@/components/Modal'
 
 export default function Agenda() {
-  const [dataSelecionada, setDataSelecionada] = useState<{
-    dia: number
-    mes: number
-  } | null>(null)
-
-  const [userData, setUserData] = useState<userEstabelecimento | null>(null)
-  // Chame a função Loaduser quando o componente for montado
-  async function fetchUserData() {
-    try {
-      const data = await Loaduser() // Passe o userId para a função Loaduser
-      setUserData(data)
-      // console.log(data)
-      // setUserData(data)
-    } catch (error) {
-      // Trate erros, se necessário
-      console.error('Erro ao carregar dados do usuário:', error)
-    }
-  }
-
-  useEffect(() => {
-    const diaAtual = new Date().getDate()
-    const mesAtual = new Date().getMonth() + 1
-    setDataSelecionada({ dia: diaAtual, mes: mesAtual })
-    fetchUserData()
-  }, [])
-
-  const handleDataSelecionada = (data: { dia: number; mes: number }) => {
-    setDataSelecionada(data)
-  }
+  const { sub, name } = getUser()
+  const id: number = parseInt(sub)
 
   return (
     <div>
       <MenuSideBar />
 
       <div className=" flex-col ml-16 sm:flex-row md:flex-row">
-        <Welcome nome={userData?.nome || ''} />
+        <div className="flex items-center justify-between px-4">
+          <Welcome nome={name || ''} />
 
-        <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-2 p-1 mt-5">
-          {/* Conteúdo da coluna 1 */}
-          <Calendario onDataSelecionada={handleDataSelecionada} />
-          {/* Conteúdo da coluna 2 */}
-
-          {/* Conteúdo da coluna 3 */}
-          <AgendadoDia dataSelecionada={dataSelecionada} id={userData?.id} />
+          <ButtonLogout />
         </div>
+
+        <Dashboard id={id} />
       </div>
     </div>
   )

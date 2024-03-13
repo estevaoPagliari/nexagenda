@@ -6,12 +6,13 @@ import { RiSettings4Line } from 'react-icons/ri'
 import { TbReportAnalytics } from 'react-icons/tb'
 import { AiOutlineUser, AiOutlineHeart } from 'react-icons/ai'
 import { FiMessageSquare, FiFolder, FiShoppingCart } from 'react-icons/fi'
+import { CiLogout } from 'react-icons/ci'
 
 export function MenuSideBar() {
   const menus = [
     { name: 'Painel de Controle', link: '/', icon: MdOutlineDashboard },
     { name: 'user', link: '/', icon: AiOutlineUser },
-    { name: 'messages', link: '/', icon: FiMessageSquare },
+    { name: 'Logout ', link: '/', icon: CiLogout },
     { name: 'analytics', link: '/', icon: TbReportAnalytics, margin: true },
     { name: 'File Manager', link: '/', icon: FiFolder },
     { name: 'Cart', link: '/', icon: FiShoppingCart },

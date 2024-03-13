@@ -5,6 +5,7 @@ import { HorarioFuncionamento } from '../api/interface/InterHorarioFuncionamento
 import { AgendaNew } from '../api/interface/InterAgenda'
 import { LoadHorario } from '../api/HorarioFuncionamento'
 import { FadeLoader, BarLoader } from 'react-spinners'
+import { Modal } from './Modal'
 
 let openingTime = ''
 let closingTime = ''
@@ -190,9 +191,29 @@ export function AgendadoDia({
     (a, b) => (a.horario > b.horario ? 1 : -1),
   )
 
+  const [isModalVisible, setModalVisible] = useState<Array<boolean>>(
+    allAppointments.map(() => false),
+  )
+
+  const handleOpenModal = (index: number) => {
+    setModalVisible((prev) => {
+      const newState = [...prev]
+      newState[index] = true
+      return newState
+    })
+  }
+
+  const handleCloseModal = (index: number) => {
+    setModalVisible((prev) => {
+      const newState = [...prev]
+      newState[index] = false
+      return newState
+    })
+  }
+
   // Retornar o JSX do componente
   return (
-    <div className="bg-slate-200/40 rounded-xl py-2 px-4 sm:px-4 lg:px-6 overflow-y-auto h-96">
+    <div className="bg-slate-200/40 rounded-xl py-2 px-4 sm:px-4 lg:px-6 overflow-y-auto h-[450px]">
       {userHorario && userHorario.length > 0 ? (
         <div>
           <div>
@@ -208,13 +229,14 @@ export function AgendadoDia({
             {userAgenda ? (
               <div className="grid grid-cols-1 gap-4">
                 {allAppointments.map((appointment, index) => (
-                  <div
+                  <button
                     key={index}
                     className={`flex items-center gap-2 p-2 bg-slate-200/50 rounded-xl cursor-pointer hover:bg-blue-100 transition duration-300 ${
                       appointment.Cliente.nome === 'Horário vago'
                         ? 'text-red-500 font-normal bg-red-100'
                         : 'text-green-500 font-semibold bg-green-100'
                     }`}
+                    onClick={() => handleOpenModal(index)}
                   >
                     <div className="ml-1">
                       {appointment.Cliente.nome === 'Horário vago' ? (
@@ -231,7 +253,13 @@ export function AgendadoDia({
                         <div>{`Tempo de serviço: ${appointment.TipoServico.tempoServico}`}</div>
                       )}
                     </div>
-                  </div>
+                    <Modal
+                      isVisible={isModalVisible[index]}
+                      onClose={() => handleCloseModal(index)}
+                      nome={appointment.Cliente.nome}
+                      servico={appointment.TipoServico.nome}
+                    />
+                  </button>
                 ))}
               </div>
             ) : (
