@@ -5,7 +5,8 @@ import { HorarioFuncionamento } from '../api/interface/InterHorarioFuncionamento
 import { AgendaNew } from '../api/interface/InterAgenda'
 import { LoadHorario } from '../api/HorarioFuncionamento'
 import { FadeLoader, BarLoader } from 'react-spinners'
-import { Modal } from './Modal'
+import { Modal } from './modal/Modal'
+import { ModalAgendamento } from './modal/Modal-Agendamento'
 
 let openingTime = ''
 let closingTime = ''
@@ -253,12 +254,41 @@ export function AgendadoDia({
                         <div>{`Tempo de serviço: ${appointment.TipoServico.tempoServico}`}</div>
                       )}
                     </div>
-                    <Modal
-                      isVisible={isModalVisible[index]}
-                      onClose={() => handleCloseModal(index)}
-                      nome={appointment.Cliente.nome}
-                      servico={appointment.TipoServico.nome}
-                    />
+                    {appointment.Cliente.nome === 'Horário vago' ? (
+                      <div>
+                        <Modal
+                          isVisible={isModalVisible[index]}
+                          onClose={() => handleCloseModal(index)}
+                          nome={appointment.Cliente.nome}
+                          servico={appointment.TipoServico.nome}
+                          dia={dataSelecionada?.dia ?? null}
+                          mes={dataSelecionada?.mes ?? null}
+                          horario={appointment.horario}
+                          tempoServico={appointment.TipoServico.tempoServico}
+                          telefone={appointment.Cliente.telefone}
+                          email={appointment.Cliente.email}
+                          nomeRecurso={appointment.Recurso.nome}
+                          idagenda={appointment.id}
+                        />
+                      </div>
+                    ) : (
+                      <div>
+                        <ModalAgendamento
+                          isVisible={isModalVisible[index]}
+                          onClose={() => handleCloseModal(index)}
+                          nome={appointment.Cliente.nome}
+                          servico={appointment.TipoServico.nome}
+                          dia={dataSelecionada?.dia ?? null}
+                          mes={dataSelecionada?.mes ?? null}
+                          horario={appointment.horario}
+                          tempoServico={appointment.TipoServico.tempoServico}
+                          telefone={appointment.Cliente.telefone}
+                          email={appointment.Cliente.email}
+                          nomeRecurso={appointment.Recurso.nome}
+                          idagenda={appointment.id}
+                        />
+                      </div>
+                    )}
                   </button>
                 ))}
               </div>

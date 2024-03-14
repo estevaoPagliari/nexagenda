@@ -14,7 +14,11 @@ export function Dashboard({ id }: { id: number }) {
   // Chame a função Loaduser quando o componente for montado
   async function fetchUserData() {
     try {
-      const data = await Loaduser() // Passe o userId para a função Loaduser
+      let idString = ''
+      if (id !== null) {
+        idString = id.toString()
+      }
+      const data = await Loaduser(idString) // Passe o userId para a função Loaduser
       setUserData(data)
       // console.log(data)
       // setUserData(data)

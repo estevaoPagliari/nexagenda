@@ -1,7 +1,6 @@
 import { api } from './api'
 
-const userId = '4'
-export async function Loaduser() {
+export async function Loaduser(userId: string) {
   try {
     const response = api.get(`/userestabelecimento/${userId}`)
     // console.log((await response).data[userId])

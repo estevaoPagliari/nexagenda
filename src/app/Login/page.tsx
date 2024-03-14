@@ -34,6 +34,7 @@ export default function Login() {
     const { email, senha } = data
     console.log(data)
     const IsAuthenticated = await handleOAuthCode(email, senha)
+    console.log('teste2')
     if (IsAuthenticated) {
       router.push('/agenda')
     }
