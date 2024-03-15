@@ -64,10 +64,11 @@ export function ModalAgendar({
   }
 
   useEffect(() => {
-    if (TipoServico.length === 0) {
+    if (TipoServico.length === 0 && isVisible) {
       FetchTipoServico()
     }
-  }, []) // Executa apenas uma vez ao montar o componente
+  }, [isVisible]) // Executa apenas quando isVisible muda para true
+
   const {
     control,
     handleSubmit,
@@ -143,7 +144,7 @@ export function ModalAgendar({
                 </select>
               )}
             />
-            {errors.tipoServico && <text>{errors.tipoServico?.message}</text>}
+            {errors.tipoServico && <span>{errors.tipoServico?.message}</span>}
             <Controller
               control={control}
               name="cpf"
@@ -158,7 +159,7 @@ export function ModalAgendar({
                 />
               )}
             />
-            {errors.cpf && <text>{errors.cpf?.message}</text>}
+            {errors.cpf && <span>{errors.cpf?.message}</span>}
             <div>
               <button
                 className="bg-red-500 hover:bg-slate-300"
