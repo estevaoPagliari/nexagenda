@@ -6,7 +6,7 @@ import { AgendaNew } from '../api/interface/InterAgenda'
 import { LoadHorario } from '../api/HorarioFuncionamento'
 import { FadeLoader, BarLoader } from 'react-spinners'
 import { Modal } from './modal/Modal'
-import { ModalAgendamento } from './modal/Modal-Agendamento'
+import { ModalAgendar } from './modal/ModalAgendar'
 
 let openingTime = ''
 let closingTime = ''
@@ -32,6 +32,10 @@ export function AgendadoDia({
   const [userHorario, setUserHorario] = useState<HorarioFuncionamento[]>([])
 
   const [userAgenda, setUserAgenda] = useState<AgendaNew[]>([])
+
+  async function onAppointmentCancelled() {
+    await fetchAppointments()
+  }
 
   // consulta a api e retorna horario de funcionamento
   async function fetchUserHorario() {
@@ -256,6 +260,27 @@ export function AgendadoDia({
                     </div>
                     {appointment.Cliente.nome === 'Horário vago' ? (
                       <div>
+                        <ModalAgendar
+                          id={id ?? null}
+                          isVisible={isModalVisible[index]}
+                          onClose={() => handleCloseModal(index)}
+                          nome={appointment.Cliente.nome}
+                          servico={appointment.TipoServico.nome}
+                          dia={dataSelecionada?.dia ?? null}
+                          mes={dataSelecionada?.mes ?? null}
+                          horario={appointment.horario}
+                          tempoServico={appointment.TipoServico.tempoServico}
+                          telefone={appointment.Cliente.telefone}
+                          email={appointment.Cliente.email}
+                          nomeRecurso={appointment.Recurso.nome}
+                          idagenda={appointment.id}
+                          onAppointmentCancelled={() =>
+                            onAppointmentCancelled()
+                          }
+                        />
+                      </div>
+                    ) : (
+                      <div>
                         <Modal
                           isVisible={isModalVisible[index]}
                           onClose={() => handleCloseModal(index)}
@@ -269,23 +294,9 @@ export function AgendadoDia({
                           email={appointment.Cliente.email}
                           nomeRecurso={appointment.Recurso.nome}
                           idagenda={appointment.id}
-                        />
-                      </div>
-                    ) : (
-                      <div>
-                        <ModalAgendamento
-                          isVisible={isModalVisible[index]}
-                          onClose={() => handleCloseModal(index)}
-                          nome={appointment.Cliente.nome}
-                          servico={appointment.TipoServico.nome}
-                          dia={dataSelecionada?.dia ?? null}
-                          mes={dataSelecionada?.mes ?? null}
-                          horario={appointment.horario}
-                          tempoServico={appointment.TipoServico.tempoServico}
-                          telefone={appointment.Cliente.telefone}
-                          email={appointment.Cliente.email}
-                          nomeRecurso={appointment.Recurso.nome}
-                          idagenda={appointment.id}
+                          onAppointmentCancelled={() =>
+                            onAppointmentCancelled()
+                          }
                         />
                       </div>
                     )}

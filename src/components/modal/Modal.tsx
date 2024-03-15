@@ -14,6 +14,7 @@ interface ModalInter {
   nomeRecurso: string
   idagenda: number | null
   onClose: () => void
+  onAppointmentCancelled: () => void
 }
 
 export function Modal({
@@ -29,6 +30,7 @@ export function Modal({
   email,
   nomeRecurso,
   idagenda,
+  onAppointmentCancelled,
 }: ModalInter) {
   if (!isVisible) {
     return null
@@ -68,41 +70,43 @@ export function Modal({
               </div>
             </div>
           ) : (
-            <div className="grid grid-flow-col grid-cols-2 p-2">
-              <div className="p-2 text-xl border-r ">
-                <div className="flex justify-start items-center p-2">
-                  Nome Cliente : {nome}
+            <div>
+              <div className="grid grid-flow-col grid-cols-2 p-2">
+                <div className="p-2 text-xl border-r ">
+                  <div className="flex justify-start items-center p-2">
+                    Nome Cliente : {nome}
+                  </div>
+                  <div className="flex justify-start items-center p-2">
+                    Telefone : {telefone}
+                  </div>
+                  <div className="flex justify-start items-center p-2">
+                    Email : {email}
+                  </div>
                 </div>
-                <div className="flex justify-start items-center p-2">
-                  Telefone : {telefone}
-                </div>
-                <div className="flex justify-start items-center p-2">
-                  Email : {email}
+                <div className="p-2 text-xl">
+                  <div className="flex justify-start items-center p-2">
+                    Serviço : {servico}
+                  </div>
+                  <div className="flex justify-start items-center p-2">
+                    Tempo de Serviço : {tempoServico} minutos
+                  </div>
+                  <div className="flex justify-start items-center p-2">
+                    Recurso : {nomeRecurso}
+                  </div>
                 </div>
               </div>
-              <div className="p-2 text-xl">
-                <div className="flex justify-start items-center p-2">
-                  Serviço : {servico}
-                </div>
-                <div className="flex justify-start items-center p-2">
-                  Tempo de Serviço : {tempoServico} minutos
-                </div>
-                <div className="flex justify-start items-center p-2">
-                  Recurso : {nomeRecurso}
-                </div>
+              <div className="flex justify-center items-center gap-5">
+                <ButtonCancelarAgendamento
+                  idagenda={idagenda ?? null}
+                  onCancel={onClose}
+                  onAppointmentCancelled={onAppointmentCancelled}
+                />
+                <span className="font-semibold w-80 rounded-md bg-blue-500 hover:scale-110 hover:bg-blue-600 duration-500">
+                  REAGENDAR
+                </span>
               </div>
             </div>
           )}
-          <div className="flex-row gap-10">
-            <div className="flex justify-center items-center py-3">
-              <ButtonCancelarAgendamento idagenda={idagenda ?? null} />
-            </div>
-            <div className="flex justify-center items-center py-3">
-              <span className="font-semibold w-96 bg-blue-500 rounded-md">
-                REAGENDAR
-              </span>
-            </div>
-          </div>
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ import * as yup from 'yup'
 import { handleOAuthCode } from '@/api/login'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { useState } from 'react'
 
 const schema = yup.object({
   email: yup.string().email('Email Invalido').required('Campo obrigatório'),
@@ -15,6 +16,7 @@ const schema = yup.object({
 })
 
 export default function Login() {
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const {
     control,
@@ -30,7 +32,7 @@ export default function Login() {
   }
 
   async function handleCreateUser(data: FormData): Promise<void> {
-    console.log('teste')
+    setIsLoading(true)
     const { email, senha } = data
     console.log(data)
     const IsAuthenticated = await handleOAuthCode(email, senha)
@@ -94,8 +96,9 @@ export default function Login() {
           <button
             className="h-10 transition text-slate-100 font-semibold rounded-md ease-in-out delay-150 bg-black hover:-translate-y-1 hover:scale-110 hover:bg-slate-600 duration-300 "
             onClick={handleSubmit(handleCreateUser)}
+            disabled={isLoading}
           >
-            Login
+            {isLoading ? 'Carregando...' : 'Login'}
           </button>
         </div>
         <div>Registra-se</div>

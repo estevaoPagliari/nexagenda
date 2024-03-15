@@ -5,8 +5,6 @@ import { getUser } from '@/lib/auth'
 import { Dashboard } from '@/components/Dashboard'
 import { ButtonLogout } from '@/components/button/Button-Logout'
 
-import { Modal } from '@/components/modal/Modal'
-
 export default function Agenda() {
   const { sub, name } = getUser()
   const id: number = parseInt(sub)
